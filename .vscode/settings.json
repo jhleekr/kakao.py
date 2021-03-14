@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "./kakao/"
+    ], // fix import error from pylance
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "black"
+}
