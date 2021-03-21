@@ -26,7 +26,7 @@ class Channel:
         }
         return await self.__sendPacket("WRITE", data)
 
-    async def sendText(self, msg):
+    async def send(self, msg):
         return await self.sendChat(msg, "{}", 1)
 
     async def forwardChat(self, msg, extra, t):
@@ -46,12 +46,7 @@ class Channel:
 
     async def hideMessage(self, logId, t):
         if self.li:
-            data = {
-                "c": self.chatId,
-                "li": self.li,
-                "logId": logId,
-                "t": t
-            }
+            data = {"c": self.chatId, "li": self.li, "logId": logId, "t": t}
             return await self.__sendPacket("REWRITE", data)
 
     async def kickMember(self, mid):
@@ -64,11 +59,7 @@ class Channel:
             await self.__sendPacket("KICKMEM", data)
 
     async def setMeta(self, t, content):
-        data = {
-            "chatId": self.chatId,
-            "type": t,
-            "content": content
-        }
+        data = {"chatId": self.chatId, "type": t, "content": content}
         return await self.__sendPacket("SETMETA", data)
 
     async def getLinkInfo(self):
@@ -78,4 +69,6 @@ class Channel:
         return await self.__sendPacket("CHATINFO", {"chatId": self.chatId})
 
     async def getUserInfo(self, userId):
-        return await self.__sendPacket("MEMBER", {"chatId": self.chatId, "memberIds": [userId]})
+        return await self.__sendPacket(
+            "MEMBER", {"chatId": self.chatId, "memberIds": [userId]}
+        )

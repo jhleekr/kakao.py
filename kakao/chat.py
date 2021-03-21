@@ -6,15 +6,15 @@ import hashlib
 import requests
 
 
-class Chat:
+class Message:
     def __init__(self, channel, body):
         self.channel = channel
         self.rawBody = body
         self.logId = self.rawBody["chatLog"]["logId"]
         self.type = self.rawBody["chatLog"]["type"]
         self.message = self.rawBody["chatLog"]["message"]
-        self.msgId = self.rawBody["chatLog"]["msgId"]
-        self.authorId = self.rawBody["chatLog"]["authorId"]
+        self.id = self.rawBody["chatLog"]["msgId"]
+        self.author = self.rawBody["chatLog"]["authorId"]
 
         try:
             if "attachment" in self.rawBody["chatLog"]:
@@ -26,6 +26,11 @@ class Chat:
 
         # authorNickname이 작동하지 않는 관계로 authorId로 대채
         self.nickName = self.authorId
+
+    def __repr__(self):
+        return "<Message id={0.id} channel={0.channel!r} type={0.type!r} author={0.author!r}>".format(
+            self
+        )
 
     async def reply(self, msg, t=1):
         return await self.channel.sendChat(
