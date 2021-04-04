@@ -50,12 +50,12 @@ from .checkIn import getCheckInData
 from .cryptoManager import CryptoManager
 from .httpApi import postText, Login
 from .writer import Writer
-from .chat import Chat
+from .chat import Message
 from .channel import Channel
 from .packet import Packet
 
 try:
-    from bson import BSON as bson
+    import bson
 except ImportError as e:
     print("ImportError: {}".format(str(e)))
     exit()
@@ -194,7 +194,7 @@ class Client:
                 li = 0
 
             channel = Channel(chatId, li, self.__writer)
-            chat = Chat(channel, body)
+            chat = Message(channel, body)
 
             self.loop.create_task(self.onMessage(chat))
 
