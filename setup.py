@@ -19,7 +19,7 @@ setup(
     # 프로젝트에 대한 설명을 입력합니다. 보통 README.md로 관리합니다.
     long_description_content_type="text/markdown",
     # 마크다운 파일로 description를 지정했다면 text/markdown으로 작성합니다.
-    install_requires=["bson", "requests", "pycryptodomex"],
+    install_requires=["pymongo", "requests", "pycryptodomex"],
     # 설치시 설치할 라이브러리를 지정합니다.
     zip_safe=False,
     classifiers=["License :: OSI Approved :: MIT License"]
