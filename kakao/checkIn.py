@@ -3,7 +3,7 @@ from socket import socket
 from .cryptoManager import CryptoManager
 from .packet import Packet
 
-from bson import BSON as bson
+import bson
 
 
 def getCheckInData(host: str, port: int):
