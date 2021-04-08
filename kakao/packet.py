@@ -2,7 +2,7 @@ import os
 import io
 import struct
 
-from bson import BSON as bson
+import bson
 
 
 class Packet:
@@ -18,12 +18,12 @@ class Packet:
         f.write(struct.pack("<I", self.PacketID))
         f.write(struct.pack("<H", self.StatusCode))
 
-        if (11-len(self.PacketName)) < 0:
+        if (11 - len(self.PacketName)) < 0:
             raise Exception("invalid packetName")
 
         f.write(self.PacketName.encode("utf-8"))
 
-        f.write(b"\x00"*(11-len(self.PacketName)))
+        f.write(b"\x00" * (11 - len(self.PacketName)))
         f.write(struct.pack("<b", self.BodyType))
         f.write(struct.pack("<i", len(self.Body)))
 
@@ -43,7 +43,7 @@ class Packet:
         encrypted_packet = crypto.aesEncrypt(self.toLocoPacket(), iv)
 
         f = io.BytesIO()
-        f.write(struct.pack("<I", len(encrypted_packet)+len(iv)))
+        f.write(struct.pack("<I", len(encrypted_packet) + len(iv)))
         f.write(iv)
         f.write(encrypted_packet)
 
@@ -52,7 +52,7 @@ class Packet:
     def readEncryptedLocoPacket(self, packet, crypto):
         packetLen = struct.unpack(">I", packet[0:4])[0]
         iv = packet[4:20]
-        data = packet[20:packetLen-16]
+        data = packet[20 : packetLen - 16]
 
         dec = crypto.aesDecrypt(data, iv)
 

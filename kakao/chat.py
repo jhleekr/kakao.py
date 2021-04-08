@@ -24,8 +24,7 @@ class Message:
         except:
             pass
 
-        # authorNickname이 작동하지 않는 관계로 authorId로 대채
-        self.nickName = self.authorId
+        self.nickName = self.author
 
     def __repr__(self):
         return "<Message id={0.id} channel={0.channel!r} type={0.type!r} author={0.author!r}>".format(
@@ -45,7 +44,7 @@ class Message:
                     "src_mentions": [],
                     "src_message": self.message,
                     "src_type": self.type,
-                    "src_userId": self.authorId,
+                    "src_userId": self.author,
                 }
             ),
             26,
