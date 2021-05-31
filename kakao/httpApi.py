@@ -5,8 +5,8 @@ import hashlib
 
 Agent = "win32"
 Lang = "ko"
-Version = "3.1.1"
-AppVersion = "3.1.1.2441"
+Version = "9.3.6"
+AppVersion = "9.3.6"
 OsVersion = "10.0"
 
 AuthHeader = f"{Agent}/{Version}/{Lang}"
@@ -15,15 +15,17 @@ AuthUserAgent = f"KT/{Version} Wd/{OsVersion} {Lang}"
 LoginUrl = "https://ac-sb-talk.kakao.com/win32/account/login.json"
 RegisterDeviceUrl = "https://ac-sb-talk.kakao.com/win32/account/register_device.json"
 RequestPasscodeUrl = "https://ac-sb-talk.kakao.com/win32/account/request_passcode.json"
-MoreSettingUrl = f"https://sb-talk.kakao.com/win32/account/more_settings.json?since={0}&lang={Lang}"
+MoreSettingUrl = (
+    f"https://sb-talk.kakao.com/win32/account/more_settings.json?since={0}&lang={Lang}"
+)
 MediaUrl = "https://up-m.talk.kakao.com/upload"
 
 
 def RequestPasscode(email, password, device_name, device_uuid):
     h = Header(email, device_uuid)
     d = Data(email, password, device_name, device_uuid)
-    d['permanent'] = "true"
-    d['once'] = "false"
+    d["permanent"] = "true"
+    d["once"] = "false"
     r = requests.post(RequestPasscodeUrl, headers=h, data=d)
 
     return r.content.decode()
@@ -32,9 +34,9 @@ def RequestPasscode(email, password, device_name, device_uuid):
 def RegisterDevice(email, password, device_name, device_uuid, passcode):
     h = Header(email, device_uuid)
     d = Data(email, password, device_name, device_uuid)
-    d['permanent'] = "true"
-    d['once'] = "false"
-    d['passcode'] = passcode
+    d["permanent"] = "true"
+    d["once"] = "false"
+    d["passcode"] = passcode
     r = requests.post(RegisterDeviceUrl, headers=h, data=d)
 
     return r.content.decode()
@@ -43,8 +45,8 @@ def RegisterDevice(email, password, device_name, device_uuid, passcode):
 def Login(email, password, device_name, device_uuid):
     h = Header(email, device_uuid)
     d = Data(email, password, device_name, device_uuid)
-    d['permanent'] = True
-    d['forced'] = True
+    d["permanent"] = True
+    d["forced"] = True
     r = requests.post(LoginUrl, headers=h, data=d)
 
     return r.content.decode()
@@ -75,19 +77,27 @@ def Data(email, password, device_name, device_uuid):
         "password": password,
         "device_name": device_name,
         "device_uuid": device_uuid,
-        "os_version": OsVersion
+        "os_version": OsVersion,
     }
 
 
 def upload(data, dataType, userId):
-    r = requests.post(MediaUrl,
-                      headers={"A": AuthHeader, },
-                      data={"attachment_type": dataType,
-                            "user_id": userId, },
-                      files={'attachment': data, })
+    r = requests.post(
+        MediaUrl,
+        headers={
+            "A": AuthHeader,
+        },
+        data={
+            "attachment_type": dataType,
+            "user_id": userId,
+        },
+        files={
+            "attachment": data,
+        },
+    )
     path = r.content.decode()
-    key = path.replace('/talkm', "")
-    url = "https://dn-m.talk.kakao.com"+path
+    key = path.replace("/talkm", "")
+    url = "https://dn-m.talk.kakao.com" + path
 
     return path, key, url
 
@@ -98,11 +108,19 @@ def postText(chatId, li, text, notice, accessKey, deviceUUID):
     else:
         url = f"https://open.kakao.com/moim/chats/{chatId}/posts?link_id={li}"
 
-    r = requests.post(url, headers={"A": AuthHeader,
-                                    "User-Agent": AuthUserAgent,
-                                    "Authorization": f"{accessKey}-{deviceUUID}",
-                                    "Accept-Language": "ko"},
-                      data={"content": json.dumps([{"text": text, "type": "text"}]),
-                            "object_type": "TEXT", "notice": notice})
+    r = requests.post(
+        url,
+        headers={
+            "A": AuthHeader,
+            "User-Agent": AuthUserAgent,
+            "Authorization": f"{accessKey}-{deviceUUID}",
+            "Accept-Language": "ko",
+        },
+        data={
+            "content": json.dumps([{"text": text, "type": "text"}]),
+            "object_type": "TEXT",
+            "notice": notice,
+        },
+    )
 
     print(r.content.decode())
