@@ -29,6 +29,10 @@ class Channel:
     async def send(self, msg):
         return await self.sendChat(msg, "{}", 1)
 
+    async def notiRead(self, logId):
+        data = {"chatId": self.chatId, "watermark": logId}
+        return await self.__sendPacket("NOTIREAD", data)
+
     async def forwardChat(self, msg, extra, t):
         data = {
             "chatId": self.chatId,
