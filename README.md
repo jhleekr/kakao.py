@@ -29,7 +29,7 @@ client.run()
 
 Thanks to (Forked from)
 -------
-idev-develop/KakaoBot (Commit 8df8cf3)
+ksaidev/KakaoBot (Commit 8df8cf3)
 
 License
 -------
