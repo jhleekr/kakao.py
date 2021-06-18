@@ -1,8 +1,7 @@
 from socket import socket
-
 from .cryptoManager import CryptoManager
 from .packet import Packet
-
+from .config import APP_VERSION, AGENT, NTYPE, MCCMNC
 import bson
 
 
@@ -23,10 +22,10 @@ def getCheckInData(host: str, port: int):
         bson.encode(
             {
                 "userId": 0,
-                "os": "win32",
-                "ntype": 0,
-                "appVer": "3.14",
-                "MCCMNC": "999",
+                "os": AGENT,
+                "ntype": NTYPE,
+                "appVer": APP_VERSION,
+                "MCCMNC": MCCMNC,
                 "lang": "ko",
             }
         ),

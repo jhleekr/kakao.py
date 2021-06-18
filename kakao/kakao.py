@@ -19,10 +19,10 @@ Quick Start
 import kakao
 
 class Myclass(kakao.Client):
-    async def onReady(self):
+    async def on_ready(self):
         print("Logged on")
 
-    async def onMessage(self, chat):
+    async def on_message(self, chat):
         if chat.message == "ping":
             await chat.reply("pong!")
 
@@ -44,7 +44,6 @@ import json
 from socket import socket
 import asyncio
 import struct
-
 from .booking import getBookingData
 from .checkIn import getCheckInData
 from .cryptoManager import CryptoManager
@@ -53,6 +52,7 @@ from .writer import Writer
 from .chat import Message
 from .channel import Channel
 from .packet import Packet
+from .config import APP_VERSION, AGENT, LANG, PRT_VERSION, DTYPE, NTYPE, MCCMNC
 
 try:
     import bson
@@ -178,7 +178,7 @@ class Client:
             self.packetDict[packet.PacketID].set_result(packet)
             del self.packetDict[packet.PacketID]
 
-        self.loop.create_task(self.onPacket(packet))
+        self.loop.create_task(self.on_packet(packet))
 
         body = packet.toJsonBody()
 
@@ -196,7 +196,7 @@ class Client:
             channel = Channel(chatId, li, self.__writer)
             chat = Message(channel, body)
 
-            self.loop.create_task(self.onMessage(chat))
+            self.loop.create_task(self.on_message(chat))
 
         if packet.PacketName == "NEWMEM":
             chatId = body["chatLog"]["chatId"]
@@ -207,7 +207,7 @@ class Client:
                 li = 0
 
             channel = Channel(chatId, li, self.__writer)
-            self.loop.create_task(self.onJoin(packet, channel))
+            self.loop.create_task(self.on_join(packet, channel))
 
         if packet.PacketName == "DELMEM":
             chatId = body["chatLog"]["chatId"]
@@ -218,30 +218,30 @@ class Client:
                 li = 0
 
             channel = Channel(chatId, li, self.__writer)
-            self.loop.create_task(self.onQuit(packet, channel))
+            self.loop.create_task(self.on_quit(packet, channel))
 
         if packet.PacketName == "DECUNREAD":
             chatId = body["chatId"]
 
             channel = Channel(chatId, 0, self.__writer)
-            self.loop.create_task(self.onRead(channel, body))
+            self.loop.create_task(self.on_read(channel, body))
 
-    async def onReady(self):
+    async def on_ready(self):
         pass
 
-    async def onPacket(self, packet):
+    async def on_packet(self, packet):
         pass
 
-    async def onMessage(self, chat):
+    async def on_message(self, chat):
         pass
 
-    async def onJoin(self, packet, channel):
+    async def on_join(self, packet, channel):
         pass
 
-    async def onQuit(self, packet, channel):
+    async def on_quit(self, packet, channel):
         pass
 
-    async def onRead(self, channel, packet):
+    async def on_read(self, channel, packet):
         pass
 
     async def __heartbeat(self):
@@ -278,6 +278,10 @@ class Client:
             bookingData["ticket"]["lsl"][0], bookingData["wifi"]["ports"][0]
         ).toJsonBody()
 
+        if self.debug:
+            print(bookingData)
+            print(checkInData)
+
         self.__StreamReader, self.__StreamWriter = await asyncio.open_connection(
             checkInData["host"], int(checkInData["port"])
         )
@@ -292,15 +296,15 @@ class Client:
             0,
             bson.encode(
                 {
-                    "appVer": "3.2.7",
-                    "prtVer": "1",
-                    "os": "win32",
-                    "lang": "ko",
+                    "appVer": APP_VERSION,
+                    "prtVer": PRT_VERSION,
+                    "os": AGENT,
+                    "lang": LANG,
                     "duuid": self.device_uuid,
                     "oauthToken": self.__accessKey,
-                    "dtype": 1,
-                    "ntype": 0,
-                    "MCCMNC": "999",
+                    "dtype": DTYPE,
+                    "ntype": NTYPE,
+                    "MCCMNC": MCCMNC,
                     "revision": 0,
                     "chatIds": [],
                     "maxIds": [],
@@ -312,8 +316,6 @@ class Client:
         )
 
         if self.debug:
-            print(bookingData)
-            print(checkInData)
             print(LoginListPacket)
 
         self.__StreamWriter.write(self.__crypto.getHandshakePacket())
@@ -322,7 +324,7 @@ class Client:
 
         self.loop.create_task(self.__recvPacket())
         self.loop.create_task(self.__heartbeat())
-        self.loop.create_task(self.onReady())
+        self.loop.create_task(self.on_ready())
 
     def run(self):
         """

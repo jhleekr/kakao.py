@@ -1,6 +1,8 @@
 {
     "python.analysis.extraPaths": [
-        "./kakao/"
+        "./kakao/",
+        "./kakao/ext/",
+        "./kakao/ext/commands",
     ], // fix import error from pylance
     "editor.formatOnSave": true,
     "python.formatting.provider": "black"

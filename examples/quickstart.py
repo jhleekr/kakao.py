@@ -2,10 +2,10 @@ import kakao
 
 
 class Myclass(kakao.Client):
-    async def onReady(self):
+    async def on_ready(self):
         print("Logged on")
 
-    async def onMessage(self, chat):
+    async def on_message(self, chat):
         if chat.message == "ping":
             await chat.reply("pong!")
 

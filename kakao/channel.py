@@ -1,7 +1,5 @@
 import time
-
 from .packet import Packet
-
 import bson
 
 

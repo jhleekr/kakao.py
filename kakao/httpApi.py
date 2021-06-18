@@ -3,22 +3,20 @@ import json
 import requests
 import hashlib
 
-Agent = "win32"
-Lang = "ko"
-Version = "3.2.7"
-AppVersion = "3.2.7.2777"
-OsVersion = "10.0"
+from .config import APP_VERSION, OS_VERSION, AGENT, LANG
 
-AuthHeader = f"{Agent}/{Version}/{Lang}"
-AuthUserAgent = f"KT/{Version} Wd/{OsVersion} {Lang}"
+AUTH_HEADER = f"{AGENT}/{APP_VERSION}/{LANG}"
+UTH_USER_AGENT = f"KT/{APP_VERSION} Wd/{OS_VERSION} {LANG}"
 
-LoginUrl = "https://ac-sb-talk.kakao.com/win32/account/login.json"
-RegisterDeviceUrl = "https://ac-sb-talk.kakao.com/win32/account/register_device.json"
-RequestPasscodeUrl = "https://ac-sb-talk.kakao.com/win32/account/request_passcode.json"
-MoreSettingUrl = (
-    f"https://sb-talk.kakao.com/win32/account/more_settings.json?since={0}&lang={Lang}"
+LOGIN_URL = "https://ac-sb-talk.kakao.com/win32/account/login.json"
+REGISTER_DEVICE_URL = "https://ac-sb-talk.kakao.com/win32/account/register_device.json"
+REQUEST_PASSCODE_URL = (
+    "https://ac-sb-talk.kakao.com/win32/account/request_passcode.json"
 )
-MediaUrl = "https://up-m.talk.kakao.com/upload"
+MORE_SETTING_URL = (
+    f"https://sb-talk.kakao.com/win32/account/more_settings.json?since={0}&lang={LANG}"
+)
+MEDIA_URL = "https://up-m.talk.kakao.com/upload"
 
 
 def RequestPasscode(email, password, device_name, device_uuid):
@@ -26,7 +24,7 @@ def RequestPasscode(email, password, device_name, device_uuid):
     d = Data(email, password, device_name, device_uuid)
     d["permanent"] = "true"
     d["once"] = "false"
-    r = requests.post(RequestPasscodeUrl, headers=h, data=d)
+    r = requests.post(REQUEST_PASSCODE_URL, headers=h, data=d)
 
     return r.content.decode()
 
@@ -37,7 +35,7 @@ def RegisterDevice(email, password, device_name, device_uuid, passcode):
     d["permanent"] = "true"
     d["once"] = "false"
     d["passcode"] = passcode
-    r = requests.post(RegisterDeviceUrl, headers=h, data=d)
+    r = requests.post(REGISTER_DEVICE_URL, headers=h, data=d)
 
     return r.content.decode()
 
@@ -47,7 +45,7 @@ def Login(email, password, device_name, device_uuid):
     d = Data(email, password, device_name, device_uuid)
     d["permanent"] = True
     d["forced"] = True
-    r = requests.post(LoginUrl, headers=h, data=d)
+    r = requests.post(LOGIN_URL, headers=h, data=d)
 
     return r.content.decode()
 
@@ -55,16 +53,16 @@ def Login(email, password, device_name, device_uuid):
 def Header(email, device_uuid):
     return {
         "Content-Type": "application/x-www-form-urlencoded",
-        "A": AuthHeader,
+        "A": AUTH_HEADER,
         "X-VC": getXVC(email, device_uuid),
-        "User-Agent": AuthUserAgent,
+        "User-Agent": UTH_USER_AGENT,
         "Accept": "*/*",
-        "Accept-Language": Lang,
+        "Accept-Language": LANG,
     }
 
 
 def getXVC(email, device_uuid, isFull=False):
-    string = f"HEATH|{AuthUserAgent}|DEMIAN|{email}|{device_uuid}".encode("utf-8")
+    string = f"HEATH|{UTH_USER_AGENT}|DEMIAN|{email}|{device_uuid}".encode("utf-8")
     hash = hashlib.sha512(string).hexdigest()
     if isFull:
         return hash
@@ -77,15 +75,15 @@ def Data(email, password, device_name, device_uuid):
         "password": password,
         "device_name": device_name,
         "device_uuid": device_uuid,
-        "os_version": OsVersion,
+        "os_version": OS_VERSION,
     }
 
 
 def upload(data, dataType, userId):
     r = requests.post(
-        MediaUrl,
+        MEDIA_URL,
         headers={
-            "A": AuthHeader,
+            "A": AUTH_HEADER,
         },
         data={
             "attachment_type": dataType,
@@ -111,8 +109,8 @@ def postText(chatId, li, text, notice, accessKey, deviceUUID):
     r = requests.post(
         url,
         headers={
-            "A": AuthHeader,
-            "User-Agent": AuthUserAgent,
+            "A": AUTH_HEADER,
+            "User-Agent": UTH_USER_AGENT,
             "Authorization": f"{accessKey}-{deviceUUID}",
             "Accept-Language": "ko",
         },
