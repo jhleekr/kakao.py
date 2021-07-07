@@ -44,7 +44,7 @@ import json
 from socket import socket
 import asyncio
 import struct
-import sys
+import time
 from .booking import getBookingData
 from .checkIn import getCheckInData
 from .cryptoManager import CryptoManager
@@ -71,7 +71,6 @@ class Client:
         LoginPw: account PW [type str]
         device_name : Device's Name. [type str]
         device_uuid : Device's Uuid. [type str]
-        debug: if debug is true, it prints some log to console. [type bool]
 
     Returns:
 
@@ -87,7 +86,6 @@ class Client:
         LoginPw,
         device_name="kakao.py",
         device_uuid="a2FrYW9weWRldjEyMDI=",
-        debug=False,
     ):
         self.__sock: socket
         self.__StreamReader: asyncio.StreamReader
@@ -100,7 +98,6 @@ class Client:
         self.LoginPw = LoginPw
         self.device_name = device_name
         self.device_uuid = device_uuid
-        self.debug = debug
 
         self.__packetID = 0
 
@@ -182,9 +179,6 @@ class Client:
         self.loop.create_task(self.on_packet(packet))
 
         body = packet.toJsonBody()
-
-        if self.debug == True:
-            print(packet.PacketName)
 
         if packet.PacketName == "MSG":
             chatId = body["chatLog"]["chatId"]
@@ -273,23 +267,37 @@ class Client:
 
         self.__accessKey = r["access_token"]
 
-        bookingData = getBookingData().toJsonBody()
-
-        checkInData = getCheckInData(
-            bookingData["ticket"]["lsl"][0], bookingData["wifi"]["ports"][0]
-        ).toJsonBody()
-
-        if self.debug:
-            print(bookingData)
-            print(checkInData)
-
+        res = False
         try:
+            bookingData = getBookingData().toJsonBody()
+            checkInData = getCheckInData(
+                bookingData["ticket"]["lsl"][0], bookingData["wifi"]["ports"][0]
+            ).toJsonBody()
             self.__StreamReader, self.__StreamWriter = await asyncio.open_connection(
                 checkInData["host"], int(checkInData["port"])
             )
         except:
-            print("Login Error, Please try again")
-            sys.exit(0)
+            res = False
+        else:
+            res = True
+        while res == False:
+            print("Failed to login. Will retry in 10 seconds.")
+            time.sleep(10)
+            try:
+                bookingData = getBookingData().toJsonBody()
+                checkInData = getCheckInData(
+                    bookingData["ticket"]["lsl"][0], bookingData["wifi"]["ports"][0]
+                ).toJsonBody()
+                (
+                    self.__StreamReader,
+                    self.__StreamWriter,
+                ) = await asyncio.open_connection(
+                    checkInData["host"], int(checkInData["port"])
+                )
+            except:
+                res = False
+            else:
+                res = True
 
         self.__crypto = CryptoManager()
         self.__writer = Writer(self.__crypto, self.__StreamWriter, self.packetDict)
@@ -319,9 +327,6 @@ class Client:
                 }
             ),
         )
-
-        if self.debug:
-            print(LoginListPacket)
 
         self.__StreamWriter.write(self.__crypto.getHandshakePacket())
 

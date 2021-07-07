@@ -162,7 +162,6 @@ class Bot(BotBase, kakao.Client):
         LoginPw: account PW [type str]
         device_name : Device's Name. [type str]
         device_uuid : Device's Uuid. [type str]
-        debug: if debug is true, it prints some log to console. [type bool]
 
     Returns:
 
