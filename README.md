@@ -27,6 +27,26 @@ client = Myclass("LoginId", "LoginPw")
 client.run()
 ```
 
+Quick Start (Bot)
+-------
+```python
+import kakao
+from kakao.ext import commands
+from kakao.ext.commands import Bot
+
+
+@commands.command()
+async def ping(ctx):
+    await ctx.reply("pong")
+    return
+
+
+kakao.check_reg("LoginId", "LoginPw")
+bot = Bot("/", LoginId="LoginId", LoginPw="LoginPw")
+bot.add_command(ping)
+bot.run()
+```
+
 Thanks to (Forked from)
 -------
 ksaidev/KakaoBot (Commit 8df8cf3)
