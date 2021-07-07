@@ -10,6 +10,6 @@ async def ping(ctx):
 
 
 kakao.check_reg("LoginId", "LoginPw")
-bot = Bot("hey ", LoginId="LoginId", LoginPw="LoginPw")
+bot = Bot("/", LoginId="LoginId", LoginPw="LoginPw")
 bot.add_command(ping)
 bot.run()

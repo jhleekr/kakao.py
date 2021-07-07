@@ -44,6 +44,7 @@ import json
 from socket import socket
 import asyncio
 import struct
+import sys
 from .booking import getBookingData
 from .checkIn import getCheckInData
 from .cryptoManager import CryptoManager
@@ -282,9 +283,13 @@ class Client:
             print(bookingData)
             print(checkInData)
 
-        self.__StreamReader, self.__StreamWriter = await asyncio.open_connection(
-            checkInData["host"], int(checkInData["port"])
-        )
+        try:
+            self.__StreamReader, self.__StreamWriter = await asyncio.open_connection(
+                checkInData["host"], int(checkInData["port"])
+            )
+        except:
+            print("Login Error, Please try again")
+            sys.exit(0)
 
         self.__crypto = CryptoManager()
         self.__writer = Writer(self.__crypto, self.__StreamWriter, self.packetDict)
