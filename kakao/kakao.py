@@ -69,8 +69,8 @@ class Client:
     Parameters:
         LoginId: account ID [type str]
         LoginPw: account PW [type str]
-        device_name : Device's Name. [type str]
-        device_uuid : Device's Uuid. [type str]
+        device_name : Device's Name. [type str, optional]
+        device_uuid : Device's Uuid. [type str, optional]
 
     Returns:
 

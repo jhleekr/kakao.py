@@ -7,6 +7,17 @@ import requests
 
 
 class Message:
+    """
+    Represents a single message.
+
+    Parameters:
+        channel, body
+
+    Returns:
+
+    Remarks:
+    """
+
     def __init__(self, channel, body):
         self.channel = channel
         self.rawBody = body
@@ -32,6 +43,20 @@ class Message:
         )
 
     async def reply(self, msg, t=1):
+        """
+        Reply to this chat.
+
+        Parameters:
+            msg: message to send [type str]
+            t: attach_type [type int, optional]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+            This function REPLIES to this chat.
+            If you want to SEND A MESSAGE to channel, you need to use sendText
+        """
         return await self.channel.sendChat(
             msg,
             json.dumps(
@@ -51,24 +76,104 @@ class Message:
         )
 
     async def sendChat(self, msg, extra, t):
+        """
+        Send a message to the channel of this chat.
+
+        Parameters:
+            msg: message to send [type str]
+            extra: attach_type [type dict]
+            t: attach_type [type int]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+            If you want to send just text message, you need to use sendText
+        """
         return await self.channel.sendChat(msg, extra, t)
 
     async def sendText(self, msg):
+        """
+        Send a text message to the channel of this chat.
+
+        Parameters:
+            msg: message to send [type str]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         return await self.channel.sendText(msg)
 
     async def read(self):
+        """
+        Mark this message as read IF POSSIBLE.
+        This only affects on unread message.
+
+        Parameters:
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         return await self.channel.notiRead(self.logId)
 
     async def delete(self):
+        """
+        Delete this message IF POSSIBLE.
+
+        Parameters:
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         return await self.channel.deleteMessage(self.logId)
 
     async def hide(self):
+        """
+        Hide this message IF POSSIBLE.
+
+        Parameters:
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         return await self.channel.hideMessage(self.logId, self.type)
 
     async def kick(self):
+        """
+        Kick author of this message IF POSSIBLE.
+
+        Parameters:
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         return await self.channel.kickMember(self.authorId)
 
     async def sendPhoto(self, data, w, h):
+        """
+        Send photo to the channel of this chat.
+
+        Parameters:
+            data: image data in BYTES [type bytes]
+            w: width [type int]
+            h: height [type int]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+            you can send photo by path using sendPhotoPath
+        """
         path, key, url = upload(data, "image/jpeg", self.authorId)
         return await self.channel.forwardChat(
             "",
@@ -90,12 +195,38 @@ class Message:
         )
 
     async def sendPhotoPath(self, path, w, h):
+        """
+        Send photo to the channel of this chat.
+
+        Parameters:
+            path: path to photo [type str]
+            w: width [type int]
+            h: height [type int]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         with open(path, "rb") as f:
             data = f.read()
 
         return await self.sendPhoto(data, w, h)
 
     async def sendPhotoUrl(self, url, w, h):
+        """
+        Send online photo by url.
+
+        Parameters:
+            url: url to photo [type str]
+            w: width [type int]
+            h: height [type int]
+
+        Returns:
+            raw data of result
+
+        Remarks:
+        """
         r = requests.get(url)
         r.raise_for_status()
 

@@ -5,10 +5,7 @@ import asyncio
 from socket import socket
 from .core import Command
 
-"""
-The MIT License (MIT)
-Copyright (c) 2015-present Rapptz
-"""
+# This file use some code of discord.py by Rapptz
 
 
 class _CaseInsensitiveDict(dict):
@@ -140,12 +137,9 @@ class BotBase:
         except Exception as e:
             await self.on_command_error(chat.message, e)
 
-    async def process_commands(self, chat):
+    async def on_message(self, chat):
         await chat.read()
         await self.invoke(chat)
-
-    async def on_message(self, chat):
-        await self.process_commands(chat)
 
     async def on_ready(self):
         print("Logged on")
