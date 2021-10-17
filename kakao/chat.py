@@ -92,7 +92,7 @@ class Message:
         """
         return await self.channel.sendChat(msg, extra, t)
 
-    async def sendText(self, msg):
+    async def send(self, msg):
         """
         Send a text message to the channel of this chat.
 
@@ -104,7 +104,7 @@ class Message:
 
         Remarks:
         """
-        return await self.channel.sendText(msg)
+        return await self.channel.send(msg)
 
     async def read(self):
         """
