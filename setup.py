@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="kakao.py",
-    version="0.2.3",
+    version="0.3.0",
     url="https://github.com/jhleekr/kakao.py",
     author="jhleekr",
     author_email="jhlee@bfy.kr",
