@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="kakao.py",
-    version="0.2.2",
+    version="0.2.3",
     url="https://github.com/jhleekr/kakao.py",
     author="jhleekr",
     author_email="jhlee@bfy.kr",
@@ -12,5 +12,5 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=["pymongo", "requests", "pycryptodomex"],
     zip_safe=False,
-    classifiers=["License :: OSI Approved :: MIT License"]
+    classifiers=["License :: OSI Approved :: MIT License"],
 )

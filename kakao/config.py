@@ -1,4 +1,4 @@
-APP_VERSION = "3.2.7"
+APP_VERSION = "3.4.3"
 OS_VERSION = "10.0"
 AGENT = "win32"
 LANG = "ko"
