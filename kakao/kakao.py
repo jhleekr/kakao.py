@@ -54,6 +54,7 @@ from .chat import Message
 from .channel import Channel
 from .packet import Packet
 from .config import APP_VERSION, AGENT, LANG, PRT_VERSION, DTYPE, NTYPE, MCCMNC
+from .helper import get_appv
 
 try:
     import bson
@@ -250,6 +251,14 @@ class Client:
         LoginId,
         LoginPw,
     ):
+        try:
+            print("Attempting to get latest kakaotalk version")
+            APP_VERSION = get_appv()
+        except Exception as e:
+            print("Failed: " + str(e))
+        else:
+            print("App version is now " + APP_VERSION)
+
         r = json.loads(Login(LoginId, LoginPw, self.device_name, self.device_uuid))
 
         if r["status"] == -101:
@@ -258,7 +267,7 @@ class Client:
         elif r["status"] == -100:
             print("디바이스 등록이 되어 있지 않습니다")
 
-        elif r["status"] == 12:
+        elif r["status"] == 12 or r["status"] == 30:
             print("카카오계정 또는 비밀번호를 다시 확인해 주세요")
 
         if r["status"] != 0:
