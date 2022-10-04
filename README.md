@@ -1,5 +1,7 @@
 kakao.py
 =======
+![https://pypi.python.org/pypi/kakao.py](https://img.shields.io/pypi/v/kakao.py.svg)
+
 kakao.py is a very simple kakaotalk LOCO/HTTP API protocol wrapper for python.
 
 Introduction
